@@ -20,6 +20,15 @@ async def startup_event():
     print("Starting up CampusMatrix API...")
     print(f"Frontend URL allowed: {settings.FRONTEND_URL}")
 
+@app.get("/")
+async def root():
+    """Root endpoint."""
+    return {
+        "message": "Welcome to CampusMatrix API",
+        "docs_url": "/docs",
+        "health_url": "/health"
+    }
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
