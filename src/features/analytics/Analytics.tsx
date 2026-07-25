@@ -2,30 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
-  ResponsiveContainer, Area, AreaChart 
+  ResponsiveContainer, Area, AreaChart,
+  Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
-import { Calendar, Target, Code, Award } from 'lucide-react';
+import { Calendar, Target, Code, Award, Flame, UserCheck, Clock, Lightbulb } from 'lucide-react';
 import './Analytics.css';
 
-const xpData = Array.from({ length: 30 }, (_, i) => ({
-  day: `Day ${i + 1}`,
-  xp: Math.floor(Math.random() * 60) + 20,
-}));
-
-const difficultyData = [
-  { name: 'Easy', value: 45, color: '#10b981' },
-  { name: 'Medium', value: 32, color: '#f59e0b' },
-  { name: 'Hard', value: 10, color: '#ef4444' },
+const codingProgressData = [
+  { topic: 'Arrays', problems: 45 },
+  { topic: 'Strings', problems: 32 },
+  { topic: 'Linked Lists', problems: 20 },
+  { topic: 'Trees', problems: 18 },
+  { topic: 'DP', problems: 12 },
+  { topic: 'Graphs', problems: 8 },
 ];
 
-const weeklyActivityData = [
-  { day: 'Mon', hours: 2.5 },
-  { day: 'Tue', hours: 3.8 },
-  { day: 'Wed', hours: 1.5 },
-  { day: 'Thu', hours: 4.2 },
-  { day: 'Fri', hours: 2.0 },
-  { day: 'Sat', hours: 5.5 },
-  { day: 'Sun', hours: 4.0 },
+const timeSpentData = [
+  { name: 'Coding Practice', value: 45, color: '#8b5cf6' },
+  { name: 'Mock Interviews', value: 25, color: '#3b82f6' },
+  { name: 'Tutorials', value: 15, color: '#10b981' },
+  { name: 'Reading', value: 15, color: '#f59e0b' },
 ];
 
 const interviewData = Array.from({ length: 10 }, (_, i) => ({
@@ -33,12 +29,13 @@ const interviewData = Array.from({ length: 10 }, (_, i) => ({
   score: Math.floor(Math.random() * 40) + 60,
 }));
 
-const skillsData = [
-  { name: 'React', progress: 85, color: '#61dafb' },
-  { name: 'JavaScript', progress: 92, color: '#f7df1e' },
-  { name: 'TypeScript', progress: 60, color: '#3178c6' },
-  { name: 'Node.js', progress: 45, color: '#339933' },
-  { name: 'Python', progress: 70, color: '#3776ab' },
+const skillRadarData = [
+  { subject: 'Algorithms', A: 85, fullMark: 100 },
+  { subject: 'System Design', A: 65, fullMark: 100 },
+  { subject: 'Communication', A: 90, fullMark: 100 },
+  { subject: 'Problem Solving', A: 80, fullMark: 100 },
+  { subject: 'Data Structures', A: 75, fullMark: 100 },
+  { subject: 'Testing', A: 50, fullMark: 100 },
 ];
 
 const generateHeatmapData = () => {
@@ -80,13 +77,13 @@ const Analytics: React.FC = () => {
       <div className="analytics-header">
         <div>
           <h1 className="gradient-text">Analytics Dashboard</h1>
-          <p className="subtitle">Track your learning progress and performance</p>
+          <p className="subtitle">Comprehensive overview of your learning and readiness</p>
         </div>
         <div className="date-selector">
           <select className="glass-select">
             <option>Last 7 Days</option>
             <option>Last 30 Days</option>
-            <option>Last 90 Days</option>
+            <option>Last 3 Months</option>
             <option>All Time</option>
           </select>
         </div>
@@ -94,70 +91,98 @@ const Analytics: React.FC = () => {
 
       <div className="stats-overview">
         <div className="stat-card">
-          <div className="stat-icon xp"><Award size={24} /></div>
-          <div className="stat-info">
-            <p>Total XP</p>
-            <h3>2,450</h3>
-          </div>
-        </div>
-        <div className="stat-card">
           <div className="stat-icon problems"><Code size={24} /></div>
           <div className="stat-info">
             <p>Problems Solved</p>
-            <h3>87</h3>
+            <h3>135</h3>
           </div>
         </div>
         <div className="stat-card">
           <div className="stat-icon interview"><Target size={24} /></div>
           <div className="stat-info">
-            <p>Interview Score</p>
-            <h3>82%</h3>
+            <p>Interviews Completed</p>
+            <h3>12</h3>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon days"><Calendar size={24} /></div>
+          <div className="stat-icon streak"><Flame size={24} /></div>
           <div className="stat-info">
-            <p>Active Days</p>
-            <h3>45</h3>
+            <p>Current Streak</p>
+            <h3>14 Days</h3>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon profile"><UserCheck size={24} /></div>
+          <div className="stat-info">
+            <p>Profile Completion</p>
+            <h3>95%</h3>
           </div>
         </div>
       </div>
 
       <div className="charts-grid">
         <div className="chart-card">
-          <h3>XP Over Time</h3>
+          <h3>Coding Progress</h3>
+          <p className="chart-subtitle">Problems solved per topic</p>
           <div className="chart-wrapper">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={xpData}>
-                <defs>
-                  <linearGradient id="colorXp" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.8}/>
-                    <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                <XAxis dataKey="day" stroke="#94a3b8" tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
+              <BarChart data={codingProgressData} layout="vertical" margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" horizontal={true} vertical={false} />
+                <XAxis type="number" stroke="var(--text-secondary)" tick={{fill: 'var(--text-secondary)'}} />
+                <YAxis dataKey="topic" type="category" stroke="var(--text-secondary)" tick={{fill: 'var(--text-secondary)'}} width={80} />
                 <RechartsTooltip content={<CustomTooltip />} />
-                <Area type="monotone" dataKey="xp" name="XP Earned" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorXp)" />
-              </AreaChart>
+                <Bar dataKey="problems" name="Problems" fill="var(--accent)" radius={[0, 4, 4, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         <div className="chart-card">
-          <h3>Problems by Difficulty</h3>
+          <h3>Skill Radar</h3>
+          <p className="chart-subtitle">Proficiency across categories</p>
+          <div className="chart-wrapper radar-wrapper">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart cx="50%" cy="50%" outerRadius="80%" data={skillRadarData}>
+                <PolarGrid stroke="rgba(255,255,255,0.2)" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                <Radar name="Student" dataKey="A" stroke="var(--info)" fill="var(--info)" fillOpacity={0.6} />
+                <RechartsTooltip />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="chart-card">
+          <h3>Interview Performance</h3>
+          <p className="chart-subtitle">Score trends over last 10 mock interviews</p>
+          <div className="chart-wrapper">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={interviewData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                <XAxis dataKey="interview" stroke="var(--text-secondary)" tick={{fill: 'var(--text-secondary)'}} tickLine={false} axisLine={false} />
+                <YAxis stroke="var(--text-secondary)" domain={[0, 100]} tick={{fill: 'var(--text-secondary)'}} tickLine={false} axisLine={false} />
+                <RechartsTooltip content={<CustomTooltip />} />
+                <Line type="monotone" dataKey="score" name="Score (%)" stroke="var(--success)" strokeWidth={3} dot={{r: 4, fill: 'var(--success)', strokeWidth: 0}} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="chart-card">
+          <h3>Time Spent (Module)</h3>
+          <p className="chart-subtitle">Distribution of learning hours</p>
           <div className="chart-wrapper pie-wrapper">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={difficultyData}
+                  data={timeSpentData}
                   innerRadius={60}
                   outerRadius={80}
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  {difficultyData.map((entry, index) => (
+                  {timeSpentData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
@@ -165,84 +190,26 @@ const Analytics: React.FC = () => {
               </PieChart>
             </ResponsiveContainer>
             <div className="pie-center-text">
-              <span className="total">87</span>
+              <span className="total">120h</span>
               <span className="label">Total</span>
             </div>
           </div>
           <div className="pie-legend">
-            {difficultyData.map(item => (
+            {timeSpentData.map(item => (
               <div key={item.name} className="legend-item">
                 <span className="legend-dot" style={{backgroundColor: item.color}}></span>
                 <span className="legend-name">{item.name}</span>
-                <span className="legend-value">{item.value}</span>
+                <span className="legend-value">{item.value}%</span>
               </div>
             ))}
-          </div>
-        </div>
-
-        <div className="chart-card">
-          <h3>Weekly Activity</h3>
-          <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyActivityData}>
-                <defs>
-                  <linearGradient id="colorHours" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#3b82f6" stopOpacity={1}/>
-                    <stop offset="100%" stopColor="#0ea5e9" stopOpacity={0.6}/>
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                <XAxis dataKey="day" stroke="#94a3b8" tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Bar dataKey="hours" name="Hours" fill="url(#colorHours)" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        <div className="chart-card">
-          <h3>Interview Performance</h3>
-          <div className="chart-wrapper">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={interviewData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
-                <XAxis dataKey="interview" stroke="#94a3b8" tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
-                <YAxis stroke="#94a3b8" domain={[0, 100]} tick={{fill: '#94a3b8'}} tickLine={false} axisLine={false} />
-                <RechartsTooltip content={<CustomTooltip />} />
-                <Line type="monotone" dataKey="score" name="Score (%)" stroke="#10b981" strokeWidth={3} dot={{r: 4, fill: '#10b981', strokeWidth: 0}} />
-              </LineChart>
-            </ResponsiveContainer>
           </div>
         </div>
       </div>
 
       <div className="bottom-grid">
-        <div className="chart-card skills-card">
-          <h3>Skill Progress</h3>
-          <div className="skills-list">
-            {skillsData.map(skill => (
-              <div key={skill.name} className="skill-item">
-                <div className="skill-info">
-                  <span>{skill.name}</span>
-                  <span>{skill.progress}%</span>
-                </div>
-                <div className="skill-bar-bg">
-                  <div 
-                    className="skill-bar-fill" 
-                    style={{
-                      width: mounted ? `${skill.progress}%` : '0%',
-                      backgroundColor: skill.color
-                    }}
-                  ></div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
         <div className="chart-card heatmap-card">
-          <h3>Activity Heatmap</h3>
+          <h3>Weekly Activity</h3>
+          <p className="chart-subtitle">Contributions and activity over the last 3 months</p>
           <div className="heatmap-container">
             <div className="heatmap-grid">
               {heatmapData.map((cell, i) => (
@@ -262,6 +229,55 @@ const Analytics: React.FC = () => {
               <div className="heatmap-cell level-4"></div>
               <span>More</span>
             </div>
+          </div>
+        </div>
+
+        <div className="chart-card readiness-card">
+          <h3>Placement Readiness</h3>
+          <div className="readiness-score-container">
+            <div className="readiness-circle">
+              <h2>78%</h2>
+              <span>Ready</span>
+            </div>
+            <div className="readiness-details">
+              <div className="detail-row">
+                <span>Technical Skills</span>
+                <div className="progress-bg"><div className="progress-fill" style={{width: '85%', background: 'var(--success)'}}></div></div>
+              </div>
+              <div className="detail-row">
+                <span>Aptitude</span>
+                <div className="progress-bg"><div className="progress-fill" style={{width: '70%', background: 'var(--warning)'}}></div></div>
+              </div>
+              <div className="detail-row">
+                <span>Communication</span>
+                <div className="progress-bg"><div className="progress-fill" style={{width: '90%', background: 'var(--info)'}}></div></div>
+              </div>
+              <div className="detail-row">
+                <span>Resume Score</span>
+                <div className="progress-bg"><div className="progress-fill" style={{width: '60%', background: 'var(--error)'}}></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="recommendations-section">
+        <h3><Lightbulb size={20} className="inline-icon text-warning" /> AI Recommendations</h3>
+        <div className="recommendations-grid">
+          <div className="recommendation-card">
+            <h4>Improve System Design</h4>
+            <p>Your mock interview scores indicate a gap in System Design. Try completing the 'Grokking System Design' module.</p>
+            <button className="secondary-btn btn-sm">Start Module</button>
+          </div>
+          <div className="recommendation-card">
+            <h4>Update Your Resume</h4>
+            <p>Your resume score is 60%. Add your recent React project to boost your profile visibility to recruiters.</p>
+            <button className="secondary-btn btn-sm">Edit Profile</button>
+          </div>
+          <div className="recommendation-card">
+            <h4>Practice DP Problems</h4>
+            <p>You've solved 12 DP problems. Solve 5 more medium DP questions to solidify this topic before your Amazon interview.</p>
+            <button className="secondary-btn btn-sm">Solve Problems</button>
           </div>
         </div>
       </div>

@@ -63,7 +63,7 @@
   background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(239, 68, 68, 0.1));
   border: 1px solid rgba(245, 158, 11, 0.3);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -75,22 +75,32 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 1.4rem;
 }
 
 .daily-info p {
   margin: 0;
   color: var(--text-secondary);
+  font-size: 1.05rem;
+}
+
+.xp-reward {
+  color: var(--accent-emerald);
+  font-weight: bold;
 }
 
 .daily-timer {
   font-family: 'Outfit', sans-serif;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 700;
   color: var(--text-primary);
   background: var(--bg-deep);
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
   border: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
 
 .hub-content {
@@ -178,6 +188,11 @@
   color: var(--accent-emerald);
 }
 
+.dash-icon {
+  color: var(--text-secondary);
+  font-weight: bold;
+}
+
 .diff-badge {
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -198,6 +213,7 @@
   font-size: 0.75rem;
   color: var(--text-secondary);
   margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .sidebar {
@@ -215,10 +231,39 @@
 }
 
 .sidebar-widget h3 {
-  margin: 0 0 1rem 0;
+  margin: 0 0 1.25rem 0;
   font-family: 'Outfit', sans-serif;
   font-size: 1.2rem;
   color: var(--text-primary);
+}
+
+.stats-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.stat-box {
+  flex: 1;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.stat-box .stat-num {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+}
+
+.stat-box .stat-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
 
 .donut-chart-container {
@@ -265,24 +310,60 @@
 .heat-3 { background: rgba(16, 185, 129, 0.9); }
 .heat-4 { background: var(--accent-emerald); }
 
-.recent-list {
+.roadmap-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
 }
 
-.recent-item {
+.roadmap-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.roadmap-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
   font-size: 0.9rem;
-}
-.recent-item-title {
   color: var(--text-primary);
 }
-.recent-item-time {
-  color: var(--text-secondary);
+
+.progress-bar-small {
+  height: 6px;
+  background: var(--bg-deep);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill-small {
+  height: 100%;
+  background: var(--primary-main);
+  border-radius: 3px;
+}
+
+.contest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contest-item {
+  background: var(--bg-deep);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 3px solid var(--accent-purple);
+}
+
+.contest-date {
   font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.contest-title {
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 @media (max-width: 1024px) {

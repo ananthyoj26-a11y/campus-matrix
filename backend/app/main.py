@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.routes import auth, career, coding, interview, jobs, gamification, analytics, admin, colleges, events
+from app.routes import auth, career, coding, interview, jobs, gamification, analytics, admin, colleges, events, social, ai_services, profile
 
 app = FastAPI(title="CampusMatrix API")
 
@@ -45,3 +45,6 @@ app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"]
 app.include_router(admin.router, prefix="/api/admin", tags=["Admin"])
 app.include_router(colleges.router)
 app.include_router(events.router)
+app.include_router(social.router, prefix="/api/social", tags=["Social"])
+app.include_router(ai_services.router, prefix="/api/ai", tags=["AI"])
+app.include_router(profile.router, prefix="/api/profile", tags=["Profile"])

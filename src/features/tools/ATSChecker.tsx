@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Upload, FileText, Loader, CheckCircle, AlertCircle, XCircle, Sparkles } from 'lucide-react';
+import { Upload, Loader, CheckCircle, AlertCircle, XCircle, Sparkles } from 'lucide-react';
 
 interface ATSResult {
   overallScore: number;

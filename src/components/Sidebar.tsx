@@ -1,9 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router';
+import { NavLink } from 'react-router-dom';
 import { 
   LayoutDashboard, Map, Code2, MessageSquare, 
   Briefcase, Trophy, Users, Medal, BarChart3, User, Shield,
-  School, Calendar, FileSearch
+  School, Calendar, FileSearch, Bot, AlertTriangle,
+  MapPin, Newspaper, MessagesSquare
 } from 'lucide-react';
 import './Sidebar.css';
 
@@ -25,7 +26,14 @@ const navItems = [
   { icon: Medal, label: 'Leaderboard', path: '/leaderboard' },
   { icon: BarChart3, label: 'Analytics', path: '/analytics' },
   { icon: FileSearch, label: 'ATS Checker', path: '/tools/ats-checker' },
-  { icon: User, label: 'Profile', path: '/profile' },
+];
+
+const newItems = [
+  { icon: Bot, label: 'AI Mentor', path: '/ai-mentor' },
+  { icon: MessagesSquare, label: 'Forum', path: '/forum' },
+  { icon: Newspaper, label: 'New This Week', path: '/weekly-digest' },
+  { icon: MapPin, label: 'Campus Map', path: '/campus-map' },
+  { icon: AlertTriangle, label: 'Emergency', path: '/emergency' },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, isAdmin = false }) => {
@@ -34,6 +42,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, isAdmin = false }) => {
       <div className="sidebar-content">
         <nav className="nav-list">
           {navItems.map((item) => (
+            <NavLink 
+              key={item.path} 
+              to={item.path} 
+              className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+              title={!isExpanded ? item.label : undefined}
+            >
+              <item.icon size={20} className="nav-icon" />
+              {isExpanded && <span className="nav-label">{item.label}</span>}
+            </NavLink>
+          ))}
+          
+          <div className="nav-divider" />
+          {isExpanded && <span className="nav-section-label">Discover</span>}
+          
+          {newItems.map((item) => (
             <NavLink 
               key={item.path} 
               to={item.path} 
@@ -60,17 +83,17 @@ const Sidebar: React.FC<SidebarProps> = ({ isExpanded, isAdmin = false }) => {
           )}
         </nav>
         
-        <div className="user-mini-card">
+        <NavLink to="/profile" className="user-mini-card" style={{ textDecoration: 'none' }}>
           <div className="user-avatar">
             <User size={20} />
           </div>
           {isExpanded && (
             <div className="user-info">
-              <span className="user-name">Alex Dev</span>
-              <span className="user-level">Lvl 12 Coder</span>
+              <span className="user-name">My Profile</span>
+              <span className="user-level">View & Edit</span>
             </div>
           )}
-        </div>
+        </NavLink>
       </div>
     </aside>
   );

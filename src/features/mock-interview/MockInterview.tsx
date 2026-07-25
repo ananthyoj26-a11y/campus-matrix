@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, User, Send, Clock, CheckCircle, AlertCircle, 
-  BarChart, RotateCcw, History, Code, Briefcase, Users 
+  BarChart, RotateCcw, History, Code, Briefcase, Users, Star, Lightbulb, PlayCircle
 } from 'lucide-react';
 import './MockInterview.css';
 
 type ScreenState = 'setup' | 'chat' | 'feedback';
-type InterviewType = 'technical' | 'behavioral' | 'hr';
-type Difficulty = 'Easy' | 'Medium' | 'Hard';
+type InterviewType = 'technical' | 'behavioral' | 'hr' | 'system_design';
+type Difficulty = 'Beginner' | 'Intermediate' | 'Advanced';
 
 interface Message {
   id: string;
@@ -21,7 +21,7 @@ export default function MockInterview() {
   // Setup State
   const [type, setType] = useState<InterviewType>('technical');
   const [role, setRole] = useState('');
-  const [difficulty, setDifficulty] = useState<Difficulty>('Medium');
+  const [difficulty, setDifficulty] = useState<Difficulty>('Intermediate');
   
   // Chat State
   const [messages, setMessages] = useState<Message[]>([]);
@@ -51,7 +51,7 @@ export default function MockInterview() {
       {
         id: '1',
         sender: 'ai',
-        text: `Hi! I'm your AI interviewer. I'll be conducting a ${difficulty.toLowerCase()} ${type} interview for the ${role} position. Let's begin. Can you start by telling me a little bit about yourself and your background?`
+        text: `Hi! I'm your AI interviewer. I'll be conducting an ${difficulty.toLowerCase()} ${type.replace('_', ' ')} interview for the ${role} position. Let's begin. Can you start by telling me a little bit about yourself and your background?`
       }
     ]);
   };
@@ -108,67 +108,113 @@ export default function MockInterview() {
         
         {screen === 'setup' && (
           <div className="setup-screen">
-            <h1 className="gradient-title">AI Mock Interview Simulator</h1>
-            <p className="subtitle">Practice interviews with our AI-powered interviewer</p>
-            
-            <div className="setup-grid">
-              <div 
-                className={`type-card ${type === 'technical' ? 'selected' : ''}`}
-                onClick={() => setType('technical')}
-              >
-                <h3><Code size={20} /> Technical Interview</h3>
-                <p>Data structures, algorithms, system design</p>
+            <div className="setup-header">
+              <div>
+                <h1 className="gradient-title">AI Mock Interview Simulator</h1>
+                <p className="subtitle">Practice interviews with our AI-powered interviewer to boost your confidence.</p>
               </div>
-              <div 
-                className={`type-card ${type === 'behavioral' ? 'selected' : ''}`}
-                onClick={() => setType('behavioral')}
-              >
-                <h3><Users size={20} /> Behavioral Interview</h3>
-                <p>Tell me about a time..., leadership, teamwork</p>
-              </div>
-              <div 
-                className={`type-card ${type === 'hr' ? 'selected' : ''}`}
-                onClick={() => setType('hr')}
-              >
-                <h3><Briefcase size={20} /> HR Interview</h3>
-                <p>Salary, culture fit, career goals</p>
+              <div className="past-interviews-btn">
+                <History size={18} style={{ marginRight: '8px' }}/>
+                View History
               </div>
             </div>
+            
+            <div className="setup-grid">
+              <div className="left-panel">
+                <h2 className="section-title">Configure Interview</h2>
+                <div className="setup-form">
+                  <div className="form-group">
+                    <label>Interview Type</label>
+                    <div className="type-selector-grid">
+                      <div className={`type-card-small ${type === 'technical' ? 'selected' : ''}`} onClick={() => setType('technical')}>
+                        <Code size={20} /> <span>Technical</span>
+                      </div>
+                      <div className={`type-card-small ${type === 'behavioral' ? 'selected' : ''}`} onClick={() => setType('behavioral')}>
+                        <Users size={20} /> <span>Behavioral</span>
+                      </div>
+                      <div className={`type-card-small ${type === 'hr' ? 'selected' : ''}`} onClick={() => setType('hr')}>
+                        <Briefcase size={20} /> <span>HR Round</span>
+                      </div>
+                      <div className={`type-card-small ${type === 'system_design' ? 'selected' : ''}`} onClick={() => setType('system_design')}>
+                        <BarChart size={20} /> <span>System Design</span>
+                      </div>
+                    </div>
+                  </div>
 
-            <div className="setup-form">
-              <div className="form-group">
-                <label>Target Role</label>
-                <input 
-                  type="text" 
-                  className="form-input" 
-                  placeholder="e.g., Frontend Developer"
-                  value={role}
-                  onChange={(e) => setRole(e.target.value)}
-                />
-              </div>
-              
-              <div className="form-group">
-                <label>Difficulty</label>
-                <div className="difficulty-selector">
-                  {(['Easy', 'Medium', 'Hard'] as Difficulty[]).map(d => (
-                    <button 
-                      key={d}
-                      className={`diff-btn ${difficulty === d ? 'selected' : ''}`}
-                      onClick={() => setDifficulty(d)}
+                  <div className="form-group">
+                    <label>Target Role / Domain</label>
+                    <select 
+                      className="form-input" 
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
                     >
-                      {d}
-                    </button>
-                  ))}
+                      <option value="" disabled>Select a role...</option>
+                      <option value="Frontend Developer">Frontend Developer</option>
+                      <option value="Backend Developer">Backend Developer</option>
+                      <option value="Full Stack Developer">Full Stack Developer</option>
+                      <option value="Data Scientist">Data Scientist</option>
+                      <option value="Product Manager">Product Manager</option>
+                      <option value="UI/UX Designer">UI/UX Designer</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Difficulty</label>
+                    <div className="difficulty-selector">
+                      {(['Beginner', 'Intermediate', 'Advanced'] as Difficulty[]).map(d => (
+                        <button 
+                          key={d}
+                          className={`diff-btn ${difficulty === d ? 'selected' : ''}`}
+                          onClick={() => setDifficulty(d)}
+                        >
+                          {d}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button 
+                    className="start-btn" 
+                    onClick={handleStart}
+                    disabled={!role}
+                  >
+                    <PlayCircle size={20} style={{ marginRight: '8px' }}/>
+                    Start Interview
+                  </button>
                 </div>
               </div>
 
-              <button 
-                className="start-btn" 
-                onClick={handleStart}
-                disabled={!role.trim()}
-              >
-                Start Interview
-              </button>
+              <div className="right-panel">
+                <div className="tips-card">
+                  <h3 className="tips-title"><Lightbulb size={20} color="var(--accent-amber)" /> Interview Tips & Prep</h3>
+                  <ul className="tips-list">
+                    <li><strong>STAR Method:</strong> Use Situation, Task, Action, Result to answer behavioral questions.</li>
+                    <li><strong>Think Out Loud:</strong> Especially in technical interviews, talk through your thought process.</li>
+                    <li><strong>Pace Yourself:</strong> Don't rush. It's okay to take a moment to formulate your thoughts.</li>
+                    <li><strong>Clarify:</strong> If a question is ambiguous, ask clarifying questions before jumping to the answer.</li>
+                  </ul>
+                </div>
+
+                <div className="history-card">
+                  <h3 className="tips-title"><History size={20} /> Past Interviews</h3>
+                  <div className="history-list">
+                    <div className="history-item">
+                      <div className="history-info">
+                        <strong>Frontend Developer</strong>
+                        <span className="history-date">Technical • 2 days ago</span>
+                      </div>
+                      <div className="history-score high">85/100</div>
+                    </div>
+                    <div className="history-item">
+                      <div className="history-info">
+                        <strong>Full Stack Developer</strong>
+                        <span className="history-date">Behavioral • 1 week ago</span>
+                      </div>
+                      <div className="history-score medium">72/100</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -178,7 +224,7 @@ export default function MockInterview() {
             <div className="chat-header">
               <div className="chat-header-info">
                 <span className="type-badge">
-                  {type.charAt(0).toUpperCase() + type.slice(1)} - {difficulty}
+                  {type.replace('_', ' ').charAt(0).toUpperCase() + type.replace('_', ' ').slice(1)} - {difficulty}
                 </span>
                 <div className="timer">
                   <Clock size={16} style={{ display: 'inline', marginRight: '4px', verticalAlign: 'text-bottom' }}/>
@@ -249,7 +295,7 @@ export default function MockInterview() {
 
             <div className="feedback-grid">
               <div className="feedback-card">
-                <h3><BarChart size={20} color="#818cf8"/> Category Scores</h3>
+                <h3><BarChart size={20} color="#818cf8"/> Scoring Rubric</h3>
                 
                 <div className="category-row">
                   <div className="category-label">
@@ -263,7 +309,7 @@ export default function MockInterview() {
                 
                 <div className="category-row">
                   <div className="category-label">
-                    <span>Technical Skills</span>
+                    <span>Technical Accuracy</span>
                     <span>72/100</span>
                   </div>
                   <div className="category-bar-bg">
@@ -278,6 +324,16 @@ export default function MockInterview() {
                   </div>
                   <div className="category-bar-bg">
                     <div className="category-bar-fill" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+
+                <div className="category-row">
+                  <div className="category-label">
+                    <span>Confidence</span>
+                    <span>80/100</span>
+                  </div>
+                  <div className="category-bar-bg">
+                    <div className="category-bar-fill" style={{ width: '80%' }}></div>
                   </div>
                 </div>
               </div>
@@ -304,8 +360,8 @@ export default function MockInterview() {
               <button className="action-btn primary" onClick={reset}>
                 <RotateCcw size={18} /> Practice Again
               </button>
-              <button className="action-btn secondary">
-                <History size={18} /> View History
+              <button className="action-btn secondary" onClick={reset}>
+                <History size={18} /> Back to Dashboard
               </button>
             </div>
           </div>

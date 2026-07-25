@@ -1,0 +1,230 @@
+.ai-container {
+  display: flex;
+  height: calc(100vh - 100px);
+  gap: 20px;
+  padding: 20px;
+  color: var(--text-color);
+}
+
+.ai-sidebar {
+  width: 280px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+}
+
+[data-theme='light'] .ai-sidebar {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid #e5e7eb;
+}
+
+.new-chat-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--accent-color, #4f46e5);
+  color: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.history-item:hover {
+  background: rgba(128, 128, 128, 0.1);
+}
+
+.ai-main {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  overflow: hidden;
+}
+
+[data-theme='light'] .ai-main {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid #e5e7eb;
+}
+
+.chat-area {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.message {
+  display: flex;
+  gap: 16px;
+  max-width: 80%;
+}
+
+.message.user {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-color, #4f46e5);
+  color: white;
+  flex-shrink: 0;
+}
+
+.message.ai .avatar {
+  background: #10b981;
+}
+
+.bubble {
+  padding: 16px;
+  border-radius: 16px;
+  background: rgba(128, 128, 128, 0.1);
+  line-height: 1.5;
+}
+
+.message.user .bubble {
+  background: var(--accent-color, #4f46e5);
+  color: white;
+  border-top-right-radius: 4px;
+}
+
+.message.ai .bubble {
+  border-top-left-radius: 4px;
+}
+
+.input-area {
+  padding: 20px;
+  border-top: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+[data-theme='light'] .input-area {
+  border-top-color: #e5e7eb;
+}
+
+.suggestions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chip {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: rgba(128, 128, 128, 0.1);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.1));
+  color: var(--text-color);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+[data-theme='light'] .chip {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.chip:hover {
+  background: var(--accent-color, #4f46e5);
+  color: white;
+}
+
+.input-box {
+  display: flex;
+  align-items: center;
+  background: rgba(128, 128, 128, 0.1);
+  border-radius: 24px;
+  padding: 8px 16px;
+  gap: 12px;
+}
+
+[data-theme='light'] .input-box {
+  background: #f3f4f6;
+}
+
+.input-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  padding: 12px 0;
+  color: var(--text-color);
+  outline: none;
+  font-size: 1rem;
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted, #9ca3af);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(128, 128, 128, 0.2);
+  color: var(--text-color);
+}
+
+.action-btn.send {
+  background: var(--accent-color, #4f46e5);
+  color: white;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 12px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted, #9ca3af);
+}

@@ -4,7 +4,7 @@ from app.core.config import settings
 class SupabaseService:
     def __init__(self):
         """Initialize the Supabase client."""
-        self.supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        self.supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_SERVICE_ROLE_KEY)
 
     async def get_user_profile(self, user_id: str):
         """Get user profile from Supabase."""
@@ -14,8 +14,10 @@ class SupabaseService:
         return None
 
     async def update_user_profile(self, user_id: str, profile_data: dict):
-        """Update user profile in Supabase."""
-        response = self.supabase.table("profiles").update(profile_data).eq("id", user_id).execute()
+        """Update or create user profile in Supabase."""
+        profile_data["id"] = user_id
+        # Use upsert to handle new users from Firebase who don't have a profile yet
+        response = self.supabase.table("profiles").upsert(profile_data).execute()
         if response.data:
             return response.data[0]
         return None

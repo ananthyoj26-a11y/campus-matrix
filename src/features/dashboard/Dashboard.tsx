@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { 
-  LayoutDashboard, Flame, Star, Code2, Target, Map, 
+  Flame, Star, Code2, Target, Map, 
   MessageSquare, Briefcase, Trophy, Bot, ArrowRight, 
-  ArrowUpRight, Clock, Calendar, Medal, ChevronRight, Zap 
+  ArrowUpRight, Clock, Medal, ChevronRight, Zap,
+  Calendar, CheckCircle2, Bell, FileText, BarChart, Percent
 } from 'lucide-react';
 import './Dashboard.css';
 
@@ -11,12 +13,21 @@ const QUOTES = [
   "The secret of getting ahead is getting started.",
   "It always seems impossible until it's done.",
   "Don't watch the clock; do what it does. Keep going.",
-  "Your career is a marathon, not a sprint."
+  "Consistency is what transforms average into excellence."
 ];
 
 export default function Dashboard() {
+  // Try both common auth context patterns
+  const auth = useAuth() as any;
+  const userName = auth?.currentUser?.displayName || auth?.user?.displayName || "Student";
+
   const [greeting, setGreeting] = useState('Good day');
   const [quote, setQuote] = useState(QUOTES[0]);
+  const [goals, setGoals] = useState([
+    { id: 1, text: 'Complete OS Assignment', done: false },
+    { id: 2, text: 'Solve 5 LeetCode problems', done: true },
+    { id: 3, text: 'Update Resume for Placements', done: false }
+  ]);
   
   useEffect(() => {
     const hour = new Date().getHours();
@@ -27,7 +38,9 @@ export default function Dashboard() {
     setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]);
   }, []);
 
-  const userName = "Alex"; // Mock user
+  const toggleGoal = (id: number) => {
+    setGoals(goals.map(g => g.id === id ? { ...g, done: !g.done } : g));
+  };
 
   return (
     <div className="dashboard-container">
@@ -39,127 +52,233 @@ export default function Dashboard() {
         <p className="quote-text">"{quote}"</p>
       </header>
 
-      {/* Stats Grid */}
-      <section className="stats-grid">
-        <div className="stat-card glass-card">
-          <div className="stat-header">
-            <span className="stat-title">Current Streak</span>
-            <div className="stat-icon fire streak-fire"><Flame size={20} /></div>
-          </div>
-          <p className="stat-value">15 Days</p>
-          <div className="stat-footer">
-            <span className="trend-up"><ArrowUpRight size={14} /> Keep it up!</span>
-          </div>
-        </div>
-        
-        <div className="stat-card glass-card">
-          <div className="stat-header">
-            <span className="stat-title">XP Points</span>
-            <div className="stat-icon star"><Star size={20} /></div>
-          </div>
-          <p className="stat-value">2,450</p>
-          <div className="stat-footer">
-            <span className="trend-up"><ArrowUpRight size={14} /> +120 this week</span>
+      {/* Main Grid 1: Stats & Overview */}
+      <section className="dashboard-grid-main">
+        {/* Quick Stats */}
+        <div className="stats-col">
+          <div className="stats-grid">
+            <div className="stat-card glass-card">
+              <div className="stat-header">
+                <span className="stat-title">Current Streak</span>
+                <div className="stat-icon fire streak-fire"><Flame size={20} /></div>
+              </div>
+              <p className="stat-value">15 Days</p>
+              <div className="stat-footer">
+                <span className="trend-up"><ArrowUpRight size={14} /> Keep it up!</span>
+              </div>
+            </div>
+            
+            <div className="stat-card glass-card">
+              <div className="stat-header">
+                <span className="stat-title">Problems Solved</span>
+                <div className="stat-icon code"><Code2 size={20} /></div>
+              </div>
+              <p className="stat-value">87</p>
+              <div className="stat-footer">
+                <span className="stat-desc">Top 15% in batch</span>
+              </div>
+            </div>
+
+            <div className="stat-card glass-card">
+              <div className="stat-header">
+                <span className="stat-title">XP Points</span>
+                <div className="stat-icon star"><Star size={20} /></div>
+              </div>
+              <p className="stat-value">2,450</p>
+              <div className="stat-footer">
+                <span className="trend-up"><ArrowUpRight size={14} /> +120 this week</span>
+              </div>
+            </div>
+
+            <div className="stat-card glass-card">
+              <div className="stat-header">
+                <span className="stat-title">CGPA</span>
+                <div className="stat-icon target"><Target size={20} /></div>
+              </div>
+              <p className="stat-value">8.94</p>
+              <div className="stat-footer">
+                <span className="trend-up"><ArrowUpRight size={14} /> +0.12 this sem</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="stat-card glass-card">
-          <div className="stat-header">
-            <span className="stat-title">Problems Solved</span>
-            <div className="stat-icon code"><Code2 size={20} /></div>
-          </div>
-          <p className="stat-value">87<span style={{fontSize: '1rem', color: 'var(--text-secondary)'}}>/500</span></p>
-          <div className="stat-footer">
-            <span className="stat-desc">Top 15% of students</span>
-          </div>
-        </div>
-
-        <div className="stat-card glass-card">
-          <div className="stat-header">
-            <span className="stat-title">Career Progress</span>
-            <div className="stat-icon target"><Target size={20} /></div>
-          </div>
-          <p className="stat-value">42%</p>
-          <div className="stat-footer">
-            <span className="trend-up"><ArrowUpRight size={14} /> +5% this month</span>
+        {/* Readiness Cards */}
+        <div className="readiness-col">
+          <div className="readiness-card glass-card">
+            <div className="readiness-info">
+              <h3>Placement Readiness</h3>
+              <p>Based on academics, skills & mock tests</p>
+              <div className="readiness-bars">
+                <div className="bar-group">
+                  <span>Aptitude</span>
+                  <div className="bar-bg"><div className="bar-fill" style={{width: '75%', background: 'var(--success)'}}></div></div>
+                </div>
+                <div className="bar-group">
+                  <span>Coding</span>
+                  <div className="bar-bg"><div className="bar-fill" style={{width: '60%', background: 'var(--warning)'}}></div></div>
+                </div>
+                <div className="bar-group">
+                  <span>Interview</span>
+                  <div className="bar-bg"><div className="bar-fill" style={{width: '40%', background: 'var(--error)'}}></div></div>
+                </div>
+              </div>
+            </div>
+            <div className="progress-ring-container">
+              <svg className="progress-ring" width="120" height="120">
+                <circle className="progress-ring-circle-bg" cx="60" cy="60" r="50"></circle>
+                <circle className="progress-ring-circle" cx="60" cy="60" r="50" style={{strokeDashoffset: 314 - (314 * 65) / 100}}></circle>
+              </svg>
+              <span className="progress-ring-text">65%</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Progress Overview Section */}
-      <section className="progress-section glass-card">
-        <div className="progress-info">
-          <h3>Frontend Developer Path</h3>
-          <p>Next milestone: Master React Hooks (Estimated time: 2 hours)</p>
-          <button className="btn-primary">Continue Learning <ArrowRight size={16} /></button>
+      {/* Grid 2: Today's Schedule & Academic Overviews */}
+      <section className="dashboard-grid-secondary">
+        <div className="schedule-section glass-card">
+          <div className="section-header">
+            <h2><Calendar size={20} /> Today's Schedule</h2>
+            <Link to="/schedule" className="view-all">Full Timetable</Link>
+          </div>
+          <div className="schedule-list">
+            <div className="schedule-item">
+              <div className="time-col">09:00 AM</div>
+              <div className="schedule-details">
+                <h4>Computer Networks</h4>
+                <p>Room 304, SJT Block</p>
+              </div>
+            </div>
+            <div className="schedule-item current">
+              <div className="time-col">11:30 AM</div>
+              <div className="schedule-details">
+                <h4>Database Management Systems</h4>
+                <p>Lab 2, TT Block</p>
+              </div>
+              <div className="live-badge">Ongoing</div>
+            </div>
+            <div className="schedule-item">
+              <div className="time-col">02:00 PM</div>
+              <div className="schedule-details">
+                <h4>Placement Training</h4>
+                <p>Auditorium</p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="progress-ring-container">
-          <svg className="progress-ring" width="120" height="120">
-            <circle className="progress-ring-circle-bg" cx="60" cy="60" r="50"></circle>
-            <circle className="progress-ring-circle" cx="60" cy="60" r="50"></circle>
-          </svg>
-          <span className="progress-ring-text">42%</span>
+
+        <div className="attendance-resume-col">
+          <div className="attendance-card glass-card">
+            <div className="section-header">
+              <h2>Attendance Overview</h2>
+            </div>
+            <div className="attendance-content">
+              <div className="attendance-ring">
+                <svg className="progress-ring" width="100" height="100">
+                  <circle className="progress-ring-circle-bg" cx="50" cy="50" r="40"></circle>
+                  <circle className="progress-ring-circle" cx="50" cy="50" r="40" style={{strokeDashoffset: 251 - (251 * 85) / 100, stroke: 'var(--success)'}}></circle>
+                </svg>
+                <span className="progress-ring-text small">85%</span>
+              </div>
+              <div className="attendance-stats">
+                <p><strong>Safe!</strong> You are above the 75% criteria.</p>
+                <div className="attendance-leaves">
+                  <span>Leaves Remaining:</span>
+                  <strong>12</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="resume-score-card glass-card">
+             <div className="section-header">
+              <h2>Resume Score</h2>
+              <FileText size={20} />
+            </div>
+            <div className="resume-score-content">
+              <div className="score-display">
+                <span className="score">78</span><span className="max">/100</span>
+              </div>
+              <p>Needs action words & better formatting.</p>
+              <button className="btn-secondary btn-sm">Scan Resume</button>
+            </div>
+          </div>
+        </div>
+
+        <div className="goals-announcements-col">
+          <div className="goals-card glass-card">
+            <div className="section-header">
+              <h2>Weekly Goals</h2>
+            </div>
+            <ul className="goals-list">
+              {goals.map(goal => (
+                <li key={goal.id} className={`goal-item ${goal.done ? 'done' : ''}`} onClick={() => toggleGoal(goal.id)}>
+                  <CheckCircle2 className="goal-check" size={20} />
+                  <span>{goal.text}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          
+          <div className="announcements-card glass-card">
+            <div className="section-header">
+              <h2>Announcements</h2>
+              <Bell size={20} className="bell-icon" />
+            </div>
+            <div className="announcement-list">
+              <div className="announcement-item">
+                <span className="ann-date">Today</span>
+                <p>TCS Ninja Registration closes tomorrow at 11:59 PM.</p>
+              </div>
+              <div className="announcement-item">
+                <span className="ann-date">Yesterday</span>
+                <p>Internal Hackathon shortlists announced.</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Quick Actions Grid */}
-      <section className="quick-actions">
-        <h2>Quick Actions</h2>
-        <div className="actions-grid">
-          <Link to="/roadmap" className="action-card glass-card">
-            <div className="action-icon bg-indigo"><Map /></div>
-            <div className="action-content">
-              <h3>Career Roadmap</h3>
-              <p>Continue your path</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
-          <Link to="/coding" className="action-card glass-card">
-            <div className="action-icon bg-emerald"><Code2 /></div>
-            <div className="action-content">
-              <h3>Coding Hub</h3>
-              <p>Solve problems</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
-          <Link to="/interviews" className="action-card glass-card">
-            <div className="action-icon bg-purple"><MessageSquare /></div>
-            <div className="action-content">
-              <h3>Mock Interview</h3>
-              <p>Practice now</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
-          <Link to="/jobs" className="action-card glass-card">
-            <div className="action-icon bg-amber"><Briefcase /></div>
-            <div className="action-content">
-              <h3>Campus Jobs</h3>
-              <p>Browse openings</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
-          <Link to="/hackathons" className="action-card glass-card">
-            <div className="action-icon bg-cyan"><Trophy /></div>
-            <div className="action-content">
-              <h3>Hackathons</h3>
-              <p>Compete & win</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
-          <Link to="/mentor" className="action-card glass-card">
-            <div className="action-icon bg-rose"><Bot /></div>
-            <div className="action-content">
-              <h3>AI Mentor</h3>
-              <p>Get guidance</p>
-            </div>
-            <ChevronRight className="action-arrow" />
-          </Link>
+      {/* Coding Progress & Quick Actions */}
+      <section className="coding-actions-section">
+        <div className="coding-progress-card glass-card">
+           <div className="section-header">
+            <h2><BarChart size={20}/> Coding Progress</h2>
+          </div>
+          <div className="coding-tags">
+            <div className="coding-tag master">Arrays <span>95%</span></div>
+            <div className="coding-tag master">Strings <span>90%</span></div>
+            <div className="coding-tag inter">Linked Lists <span>65%</span></div>
+            <div className="coding-tag inter">Trees <span>50%</span></div>
+            <div className="coding-tag beginner">Dynamic Prog. <span>20%</span></div>
+            <div className="coding-tag beginner">Graphs <span>15%</span></div>
+          </div>
+        </div>
+
+        <div className="quick-actions glass-card">
+          <div className="section-header">
+            <h2>Quick Actions</h2>
+          </div>
+          <div className="actions-grid-small">
+            <Link to="/career-roadmap" className="action-btn">
+              <Map size={18} /> Roadmap
+            </Link>
+            <Link to="/coding-hub" className="action-btn">
+              <Code2 size={18} /> Practice
+            </Link>
+            <Link to="/mock-interview" className="action-btn">
+              <MessageSquare size={18} /> Mocks
+            </Link>
+            <Link to="/ai-mentor" className="action-btn">
+              <Bot size={18} /> AI Mentor
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* Two Column Layout for Feed and Events */}
-      <div className="two-col-layout">
-        {/* Activity Feed */}
+      {/* Bottom Grid for Leaderboard and Daily Challenge */}
+      <div className="bottom-grid">
         <section className="activity-feed glass-card">
           <div className="section-header">
             <h2>Recent Activity</h2>
@@ -186,66 +305,13 @@ export default function Dashboard() {
                 <span className="activity-xp">+50 XP</span>
               </div>
             </div>
-            <div className="activity-item">
-              <div className="activity-icon-wrapper"><Medal size={18} /></div>
-              <div className="activity-content">
-                <div className="activity-text">
-                  <p>Earned <strong>'First Mock'</strong> badge</p>
-                  <span className="activity-time"><Clock size={12} /> 1 day ago</span>
-                </div>
-                <span className="activity-xp">+100 XP</span>
-              </div>
-            </div>
           </div>
         </section>
 
-        {/* Upcoming Events */}
-        <section className="upcoming-events glass-card">
-          <div className="section-header">
-            <h2>Upcoming Events</h2>
-          </div>
-          <div className="events-list">
-            <div className="event-item">
-              <div className="event-date">
-                <span className="event-month">Jul</span>
-                <span className="event-day">25</span>
-              </div>
-              <div className="event-details">
-                <h4>Mock Interview Session</h4>
-                <span className="event-type">Interview Prep</span>
-              </div>
-            </div>
-            <div className="event-item">
-              <div className="event-date">
-                <span className="event-month">Jul</span>
-                <span className="event-day">28</span>
-              </div>
-              <div className="event-details">
-                <h4>Google Hackathon</h4>
-                <span className="event-type">Competition</span>
-              </div>
-            </div>
-            <div className="event-item">
-              <div className="event-date">
-                <span className="event-month">Jul</span>
-                <span className="event-day">30</span>
-              </div>
-              <div className="event-details">
-                <h4>Resume Workshop</h4>
-                <span className="event-type">Career</span>
-              </div>
-            </div>
-          </div>
-        </section>
-      </div>
-
-      {/* Bottom Grid for Leaderboard and Daily Challenge */}
-      <div className="bottom-grid">
-        {/* Leaderboard Preview */}
         <section className="leaderboard-preview glass-card">
           <div className="section-header">
-            <h2>Leaderboard</h2>
-            <Link to="/leaderboard" className="view-all">Full Rankings</Link>
+            <h2>Batch Leaderboard</h2>
+            <Link to="/leaderboard" className="view-all">Full</Link>
           </div>
           <table className="leaderboard-table">
             <thead>
@@ -253,7 +319,6 @@ export default function Dashboard() {
                 <th>Rank</th>
                 <th>Student</th>
                 <th>XP</th>
-                <th>Level</th>
               </tr>
             </thead>
             <tbody>
@@ -261,62 +326,36 @@ export default function Dashboard() {
                 <td><span className="rank-badge rank-1">1</span></td>
                 <td>
                   <div className="user-cell">
-                    <div className="avatar" style={{background: '#ef4444'}}>S</div>
-                    <span>Sarah Jenkins</span>
+                    <div className="avatar" style={{background: '#ef4444'}}>R</div>
+                    <span>Rahul Sharma</span>
                   </div>
                 </td>
                 <td>3,240</td>
-                <td><span className="level-badge">Lvl 12</span></td>
               </tr>
               <tr>
                 <td><span className="rank-badge rank-2">2</span></td>
                 <td>
                   <div className="user-cell">
-                    <div className="avatar" style={{background: '#3b82f6'}}>M</div>
-                    <span>Michael Chang</span>
+                    <div className="avatar" style={{background: '#3b82f6'}}>P</div>
+                    <span>Priya Singh</span>
                   </div>
                 </td>
                 <td>3,150</td>
-                <td><span className="level-badge">Lvl 11</span></td>
-              </tr>
-              <tr>
-                <td><span className="rank-badge rank-3">3</span></td>
-                <td>
-                  <div className="user-cell">
-                    <div className="avatar" style={{background: '#10b981'}}>E</div>
-                    <span>Emma Watson</span>
-                  </div>
-                </td>
-                <td>2,980</td>
-                <td><span className="level-badge">Lvl 10</span></td>
               </tr>
               <tr className="current-user">
-                <td><span className="rank-badge">4</span></td>
+                <td><span className="rank-badge">42</span></td>
                 <td>
                   <div className="user-cell">
-                    <div className="avatar">A</div>
-                    <span>Alex (You)</span>
+                    <div className="avatar">Y</div>
+                    <span>{userName} (You)</span>
                   </div>
                 </td>
                 <td>2,450</td>
-                <td><span className="level-badge">Lvl 8</span></td>
-              </tr>
-              <tr>
-                <td><span className="rank-badge">5</span></td>
-                <td>
-                  <div className="user-cell">
-                    <div className="avatar" style={{background: '#8b5cf6'}}>D</div>
-                    <span>David Kim</span>
-                  </div>
-                </td>
-                <td>2,100</td>
-                <td><span className="level-badge">Lvl 7</span></td>
               </tr>
             </tbody>
           </table>
         </section>
 
-        {/* Daily Challenge */}
         <section className="daily-challenge glass-card challenge-card">
           <div className="challenge-icon"><Zap size={32} /></div>
           <h3 className="challenge-title">Daily Challenge</h3>

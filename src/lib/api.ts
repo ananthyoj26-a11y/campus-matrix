@@ -1,8 +1,16 @@
+import { auth } from './firebase';
+
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
-  // Mock token retrieval - replace with real auth token later
-  const token = localStorage.getItem('auth_token');
+  let token = null;
+  if (auth.currentUser) {
+    try {
+      token = await auth.currentUser.getIdToken();
+    } catch (error) {
+      console.error('Error fetching Firebase token:', error);
+    }
+  }
   
   const headers = {
     'Content-Type': 'application/json',
