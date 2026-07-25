@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Flame, CheckCircle, Clock, Calendar, BookOpen, Trophy } from 'lucide-react';
 import './CodingHub.css';
@@ -44,8 +44,8 @@ export default function CodingHub() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [catFilter, setCatFilter] = useState('all');
   
-  // Dummy heatmap data (28 days)
-  const heatmapData = Array.from({ length: 28 }, () => Math.floor(Math.random() * 5));
+  // Stable heatmap data (28 days) using useMemo to prevent re-render regeneration
+  const heatmapData = useMemo(() => Array.from({ length: 28 }, () => Math.floor(Math.random() * 5)), []);
 
   const filteredProblems = PROBLEMS.filter(p => {
     if (diffFilter !== 'all' && p.difficulty.toLowerCase() !== diffFilter) return false;

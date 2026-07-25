@@ -17,9 +17,8 @@ const QUOTES = [
 ];
 
 export default function Dashboard() {
-  // Try both common auth context patterns
-  const auth = useAuth() as any;
-  const userName = auth?.currentUser?.displayName || auth?.user?.displayName || "Student";
+  const { user } = useAuth();
+  const userName = user?.name || user?.email?.split('@')[0] || 'Student';
 
   const [greeting, setGreeting] = useState('Good day');
   const [quote, setQuote] = useState(QUOTES[0]);
@@ -140,7 +139,6 @@ export default function Dashboard() {
         <div className="schedule-section glass-card">
           <div className="section-header">
             <h2><Calendar size={20} /> Today's Schedule</h2>
-            <Link to="/schedule" className="view-all">Full Timetable</Link>
           </div>
           <div className="schedule-list">
             <div className="schedule-item">
@@ -200,8 +198,8 @@ export default function Dashboard() {
               <div className="score-display">
                 <span className="score">78</span><span className="max">/100</span>
               </div>
-              <p>Needs action words & better formatting.</p>
-              <button className="btn-secondary btn-sm">Scan Resume</button>
+              <p>Needs action words &amp; better formatting.</p>
+              <Link to="/tools/ats-checker" className="btn-secondary btn-sm" style={{ display: 'inline-block', textDecoration: 'none', padding: '0.5rem 1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', background: 'var(--bg-tertiary)', color: 'var(--text-primary)', fontWeight: 500 }}>Scan Resume</Link>
             </div>
           </div>
         </div>
@@ -282,7 +280,6 @@ export default function Dashboard() {
         <section className="activity-feed glass-card">
           <div className="section-header">
             <h2>Recent Activity</h2>
-            <Link to="/activity" className="view-all">View All</Link>
           </div>
           <div className="activity-list">
             <div className="activity-item">
@@ -369,7 +366,7 @@ export default function Dashboard() {
           <div className="timer">
             <Clock size={16} /> 05h 23m remaining
           </div>
-          <button className="btn-primary btn-full">Solve Now <ArrowRight size={16}/></button>
+          <Link to="/coding-hub" className="btn-primary btn-full" style={{ marginTop: 'var(--spacing-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', textDecoration: 'none', padding: '0.75rem', borderRadius: 'var(--radius-md)', color: '#fff', background: 'var(--gradient-primary)', fontWeight: 600 }}>Solve Now <ArrowRight size={16}/></Link>
         </section>
       </div>
     </div>

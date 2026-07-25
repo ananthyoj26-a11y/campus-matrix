@@ -161,9 +161,45 @@
   transition: var(--transition-fast);
 }
 
-.auth-submit-btn:hover {
+.auth-submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: var(--shadow-glow);
+}
+
+.auth-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* OAuth / Social Buttons */
+.oauth-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-family: var(--font-body);
+}
+
+.oauth-btn:hover {
+  background: var(--bg-secondary);
+  border-color: var(--accent-primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.oauth-btn:active {
+  transform: translateY(0);
 }
 
 .auth-divider {

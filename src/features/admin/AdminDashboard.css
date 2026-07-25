@@ -24,7 +24,7 @@
 }
 
 .admin-header h1 {
-  font-family: var(--font-sans);
+  font-family: var(--font-heading);
   margin: 0;
   font-size: 2rem;
   color: var(--text-primary);

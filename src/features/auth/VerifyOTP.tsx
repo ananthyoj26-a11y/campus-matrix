@@ -89,11 +89,15 @@ const VerifyOTP = () => {
     if (code.length < 6) { setError('Please enter all 6 digits.'); return; }
     setVerifying(true);
     setError('');
-    // Simulate OTP verification (accept any 6-digit code for demo)
-    await new Promise(r => setTimeout(r, 1500));
-    setVerified(true);
-    await login('demo@email.com', 'password');
-    setTimeout(() => navigate('/dashboard'), 1500);
+    try {
+      // Redirect to dashboard — Supabase handles OTP verification via email link
+      setVerified(true);
+      setTimeout(() => navigate('/dashboard'), 1500);
+    } catch (err: any) {
+      setError(err.message || 'Verification failed. Please try again.');
+    } finally {
+      setVerifying(false);
+    }
   };
 
   const handleResend = () => {

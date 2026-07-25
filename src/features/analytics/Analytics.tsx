@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
@@ -65,12 +66,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const Analytics: React.FC = () => {
-  const [_mounted, setMounted] = useState(false);
-  const [heatmapData] = useState(generateHeatmapData());
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const heatmapData = React.useMemo(() => generateHeatmapData(), []);
 
   return (
     <div className="analytics-container">
@@ -267,17 +263,17 @@ const Analytics: React.FC = () => {
           <div className="recommendation-card">
             <h4>Improve System Design</h4>
             <p>Your mock interview scores indicate a gap in System Design. Try completing the 'Grokking System Design' module.</p>
-            <button className="secondary-btn btn-sm">Start Module</button>
+            <button className="btn btn-secondary btn-sm" onClick={() => {}}>Start Module</button>
           </div>
           <div className="recommendation-card">
             <h4>Update Your Resume</h4>
             <p>Your resume score is 60%. Add your recent React project to boost your profile visibility to recruiters.</p>
-            <button className="secondary-btn btn-sm">Edit Profile</button>
+            <Link to="/profile" className="btn btn-secondary btn-sm">Edit Profile</Link>
           </div>
           <div className="recommendation-card">
             <h4>Practice DP Problems</h4>
             <p>You've solved 12 DP problems. Solve 5 more medium DP questions to solidify this topic before your Amazon interview.</p>
-            <button className="secondary-btn btn-sm">Solve Problems</button>
+            <Link to="/coding-hub" className="btn btn-secondary btn-sm">Solve Problems</Link>
           </div>
         </div>
       </div>

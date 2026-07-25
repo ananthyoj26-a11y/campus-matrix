@@ -8,6 +8,7 @@
   --text-primary: #f0f0f5;
   --text-secondary: #9898b0;
   --text-muted: #5a5a7a;
+  --text-tertiary: #4a4a6a;
   
   --accent-primary: #6c5ce7;
   --accent-primary-hover: #7c6cf7;
@@ -15,6 +16,15 @@
   --accent-success: #00b894;
   --accent-warning: #fdcb6e;
   --accent-danger: #e17055;
+  
+  /* Aliases for compatibility */
+  --accent: var(--accent-primary);
+  --border: var(--border-color);
+  --success: var(--accent-success);
+  --warning: var(--accent-warning);
+  --error: var(--accent-danger);
+  --info: var(--accent-secondary);
+  --color-amber: #fdcb6e;
   
   --gradient-primary: linear-gradient(135deg, #6c5ce7, #a855f7);
   --gradient-secondary: linear-gradient(135deg, #00d2d3, #00b894);
@@ -36,6 +46,14 @@
   --transition-fast: 0.15s ease;
   --transition-normal: 0.3s ease;
   --transition-slow: 0.5s ease;
+
+  /* Spacing */
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
 }
 
 [data-theme='light'] {
@@ -47,6 +65,7 @@
   --text-primary: #1a1a2e;
   --text-secondary: #64648a;
   --text-muted: #9898b0;
+  --text-tertiary: #b0b0c8;
   
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.05);
@@ -243,6 +262,15 @@ a:hover {
 .btn-danger:hover:not(:disabled) {
   background: var(--accent-danger);
   color: #fff;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.btn-full {
+  width: 100%;
 }
 
 /* Forms */

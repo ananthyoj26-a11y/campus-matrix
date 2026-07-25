@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, ShieldAlert, HeartPulse, UserCheck, Users, Flame, AlertCircle } from 'lucide-react';
+import { Phone, ShieldAlert, HeartPulse, UserCheck, Users, Flame, AlertCircle, CheckCircle2 } from 'lucide-react';
+import Modal from '@/components/Modal';
 import './EmergencyPage.css';
 
 const CONTACTS = [
@@ -13,6 +14,14 @@ const CONTACTS = [
 ];
 
 export default function EmergencyPage() {
+  const [sosSent, setSosSent] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const triggerSOS = () => {
+    setSosSent(true);
+    setIsModalOpen(true);
+  };
+
   return (
     <div className="emergency-container">
       <motion.div 
@@ -24,8 +33,8 @@ export default function EmergencyPage() {
           <h2>Campus Emergency Dashboard</h2>
           <p>If you are in immediate danger, please press the SOS button to alert campus authorities instantly.</p>
         </div>
-        <button className="sos-btn">
-          <AlertCircle size={24} /> QUICK SOS
+        <button className="sos-btn" onClick={triggerSOS}>
+          <AlertCircle size={24} /> {sosSent ? 'SOS ACTIVE' : 'QUICK SOS'}
         </button>
       </motion.div>
 
@@ -52,6 +61,25 @@ export default function EmergencyPage() {
           </motion.div>
         ))}
       </div>
+
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="🚨 SOS Signal Dispatched" size="md">
+        <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 64, height: 64, borderRadius: '50%', background: 'rgba(0, 184, 148, 0.1)', color: 'var(--accent-success)', marginBottom: '1rem' }}>
+            <CheckCircle2 size={36} />
+          </div>
+          <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--text-primary)' }}>Emergency Alert Received</h3>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', marginBottom: '1.5rem', lineHeight: '1.5' }}>
+            Your GPS location and emergency signal have been dispatched to Campus Security Control Room. An emergency response officer is responding to your request.
+          </p>
+          <div style={{ background: 'var(--bg-tertiary)', padding: '1rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-color)', marginBottom: '1.5rem', textAlign: 'left' }}>
+            <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-muted)' }}>Hotline: <strong>1800-123-4567</strong></p>
+            <p style={{ margin: '4px 0 0 0', fontSize: '0.85rem', color: 'var(--text-muted)' }}>Status: <span style={{ color: 'var(--accent-success)', fontWeight: 600 }}>Active Dispatch</span></p>
+          </div>
+          <button className="btn btn-primary" onClick={() => setIsModalOpen(false)} style={{ width: '100%' }}>
+            Acknowledge & Close
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

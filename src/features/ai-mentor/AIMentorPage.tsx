@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { GoogleGenAI } from '@google/genai';
 import { motion } from 'framer-motion';
 import { MessageSquare, Plus, Send, Mic, Bot, User, Info } from 'lucide-react';
 import './AIMentorPage.css';
@@ -35,17 +36,33 @@ export default function AIMentorPage() {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
-    setMessages(prev => [...prev, { role: 'user', content: input }]);
+    const userMessage = input.trim();
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
     setInput('');
     setIsTyping(true);
-    
-    // Mock AI response
-    setTimeout(() => {
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        setTimeout(() => {
+          setIsTyping(false);
+          setMessages(prev => [...prev, { role: 'ai', content: 'I am your AI Campus Mentor! To enable real AI responses, please add VITE_GEMINI_API_KEY to your .env file. For now, here is a tip: focus on DSA fundamentals, build projects, and practice mock interviews regularly!' }]);
+        }, 800);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: `You are a helpful AI campus mentor for engineering students in India. You help with career guidance, coding practice, interview preparation, academic advice, and campus life. Keep responses concise (2-3 sentences) and practical. Student says: ${userMessage}`,
+      });
+      setMessages(prev => [...prev, { role: 'ai', content: result.text || 'I apologize, I could not generate a response. Please try again.' }]);
+    } catch (error) {
+      console.error('AI error:', error);
+      setMessages(prev => [...prev, { role: 'ai', content: 'I encountered an error. Please check your API key or try again.' }]);
+    } finally {
       setIsTyping(false);
-      setMessages(prev => [...prev, { role: 'ai', content: 'That sounds like a great plan. Let\'s break that down step by step to ensure you are fully prepared.' }]);
-    }, 1500);
+    }
   };
 
   return (
@@ -109,7 +126,7 @@ export default function AIMentorPage() {
               placeholder="Ask your mentor anything..." 
               value={input}
               onChange={e => setInput(e.target.value)}
-              onKeyPress={e => e.key === 'Enter' && handleSend()}
+              onKeyDown={e => e.key === 'Enter' && handleSend()}
               style={{ paddingRight: '120px' }}
             />
             <div style={{ position: 'absolute', right: '110px', top: '50%', transform: 'translateY(-50%)', fontSize: '0.8rem', color: 'var(--text-tertiary)' }}>

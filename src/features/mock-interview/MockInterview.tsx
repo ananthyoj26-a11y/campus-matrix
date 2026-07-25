@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { GoogleGenAI } from '@google/genai';
 import { 
   Bot, User, Send, Clock, CheckCircle, AlertCircle, 
   BarChart, RotateCcw, History, Code, Briefcase, Users, Lightbulb, PlayCircle
@@ -56,7 +57,7 @@ export default function MockInterview() {
     ]);
   };
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!inputValue.trim()) return;
     
     const userMsg: Message = {
@@ -69,21 +70,46 @@ export default function MockInterview() {
     setInputValue('');
     setIsTyping(true);
     
-    // Simulate AI response
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+      if (!apiKey) {
+        setTimeout(() => {
+          setIsTyping(false);
+          const aiMsg: Message = {
+            id: (Date.now() + 1).toString(),
+            sender: 'ai',
+            text: "That's a great point! As an AI interviewer (add VITE_GEMINI_API_KEY for real AI responses), I'd follow up: Can you describe a challenging technical problem you solved recently and walk me through your approach?"
+          };
+          setMessages(prev => [...prev, aiMsg]);
+          if (messages.length >= 8) handleEndInterview();
+        }, 1200);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
+      const conversationContext = messages.map(m => `${m.sender === 'ai' ? 'Interviewer' : 'Candidate'}: ${m.text}`).join('\n');
+      const result = await ai.models.generateContent({
+        model: 'gemini-2.0-flash',
+        contents: `You are a professional ${type.replace('_', ' ')} interviewer conducting a ${difficulty.toLowerCase()} level interview for the ${role || 'Software Engineer'} position. Keep your responses concise (2-3 sentences max). Ask one specific follow-up question or the next interview question. Do not give feedback yet.\n\nConversation so far:\n${conversationContext}\n\nCandidate just said: ${userMsg.text}`,
+      });
       const aiMsg: Message = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: "That's very interesting. Given your background, how would you approach solving a complex problem when you have tight deadlines and incomplete information?"
+        text: result.text || 'Could you elaborate on that point further?'
       };
       setMessages(prev => [...prev, aiMsg]);
-      
-      // End interview automatically after 5 user messages for demo
-      if (messages.length >= 8) {
-         handleEndInterview();
-      }
-    }, 2000);
+      if (messages.length >= 8) handleEndInterview();
+    } catch (error) {
+      console.error('AI interview error:', error);
+      setIsTyping(false);
+      const errMsg: Message = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: 'I had trouble processing that. Could you repeat your answer?'
+      };
+      setMessages(prev => [...prev, errMsg]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleEndInterview = () => {
