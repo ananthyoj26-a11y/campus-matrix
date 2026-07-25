@@ -5,9 +5,10 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signInWithPopup, 
-  signOut, 
   onAuthStateChanged,
   sendPasswordResetEmail,
+  updateProfile,
+  signOut,
   User as FirebaseUser
 } from 'firebase/auth';
 
@@ -139,9 +140,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // We log the error but don't throw it, since Firebase auth succeeded
         console.error('Failed to sync new profile with backend:', err);
       }
+
+      // Update Firebase profile with name
+      try {
+        await updateProfile(result.user, {
+          displayName: metadata?.name || ''
+        });
+        // Manually update local user state to reflect the new name immediately
+        setUser(prev => prev ? { ...prev, name: metadata?.name || prev.name } : null);
+      } catch (err) {
+        console.error('Failed to update Firebase profile:', err);
+      }
+
     } catch (error) {
-      setIsLoading(false);
+      console.error('Firebase Register Error:', error);
       throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
