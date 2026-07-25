@@ -1,16 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { auth, googleProvider, analytics } from '../lib/firebase';
-import { logEvent } from 'firebase/analytics';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signInWithPopup, 
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  updateProfile,
-  signOut,
-  User as FirebaseUser
-} from 'firebase/auth';
+import { supabase } from '../lib/supabase';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 
 interface User {
   id: string;
@@ -28,6 +18,9 @@ interface AuthContextType {
   isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
+  loginWithGithub: () => Promise<void>;
+  sendPhoneOtp: (phone: string) => Promise<void>;
+  verifyPhoneOtp: (phone: string, token: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, password: string, metadata?: Record<string, any>) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
@@ -39,34 +32,60 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Map Firebase user to our User type
-  const mapUser = (firebaseUser: FirebaseUser): User => ({
-    id: firebaseUser.uid,
-    email: firebaseUser.email || '',
-    name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
-    role: 'student', // Default role; backend will handle actual roles
-    avatarUrl: firebaseUser.photoURL || `https://api.dicebear.com/7.x/initials/svg?seed=${firebaseUser.email}`,
-    createdAt: firebaseUser.metadata.creationTime || new Date().toISOString(),
-  });
+  // Map Supabase user to our User type
+  const mapUser = (supabaseUser: SupabaseUser): User => {
+    const meta = supabaseUser.user_metadata || {};
+    const email = supabaseUser.email || supabaseUser.phone || '';
+    
+    return {
+      id: supabaseUser.id,
+      email: email,
+      name: meta.full_name || meta.name || meta.first_name || email.split('@')[0] || 'User',
+      role: 'student', // Default role; backend will handle actual roles
+      avatarUrl: meta.avatar_url || meta.picture || `https://api.dicebear.com/7.x/initials/svg?seed=${email}`,
+      createdAt: supabaseUser.created_at || new Date().toISOString(),
+    };
+  };
 
   useEffect(() => {
-    // Listen for auth state changes from Firebase
-    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(mapUser(firebaseUser));
+    // Check active sessions and sets the user
+    const initializeAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(mapUser(session.user));
       } else {
         setUser(null);
       }
       setIsLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    initializeAuth();
+
+    // Listen for changes on auth state (log in, log out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user) {
+          setUser(mapUser(session.user));
+        } else {
+          setUser(null);
+        }
+        setIsLoading(false);
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
   }, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
     } catch (error) {
       setIsLoading(false);
       throw error;
@@ -74,86 +93,110 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const loginWithGoogle = async () => {
-    setIsLoading(true);
     try {
-      const result = await signInWithPopup(auth, googleProvider);
-      
-      // Upsert profile in Supabase via backend API
-      try {
-        const token = await result.user.getIdToken();
-        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/profile`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            first_name: result.user.displayName?.split(' ')[0] || '',
-            last_name: result.user.displayName?.split(' ').slice(1).join(' ') || '',
-            avatar_url: result.user.photoURL || '',
-          })
-        });
-      } catch (err) {
-        console.error('Failed to sync Google profile with backend:', err);
-      }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      if (error) throw error;
     } catch (error) {
       console.error('Google login error:', error);
+      throw error;
+    }
+  };
+
+  const loginWithGithub = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      console.error('GitHub login error:', error);
+      throw error;
+    }
+  };
+
+  const sendPhoneOtp = async (phone: string) => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({
+        phone,
+      });
+      if (error) throw error;
+    } catch (error) {
+      setIsLoading(false);
       throw error;
     } finally {
       setIsLoading(false);
     }
   };
 
+  const verifyPhoneOtp = async (phone: string, token: string) => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone,
+        token,
+        type: 'sms',
+      });
+      if (error) throw error;
+    } catch (error) {
+      setIsLoading(false);
+      throw error;
+    }
+  };
+
   const register = async (email: string, password: string, metadata?: Record<string, any>) => {
     setIsLoading(true);
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
-      
-      // Target tracking: log signup event
-      if (analytics) {
-        logEvent(analytics, 'sign_up', {
-          method: 'email',
-          college: metadata?.college || 'Unknown',
-          year: metadata?.year || 'Unknown',
-          careerTrack: metadata?.careerTrack || 'Unknown'
-        });
-      }
-
-      // Call backend API to create the user profile in Supabase
-      try {
-        const token = await result.user.getIdToken();
-        await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/profile`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify({
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: metadata?.name || '',
             first_name: metadata?.name?.split(' ')[0] || '',
             last_name: metadata?.name?.split(' ').slice(1).join(' ') || '',
             college: metadata?.college || '',
             year: metadata?.year || '',
             career_track: metadata?.careerTrack || ''
-          })
-        });
+          }
+        }
+      });
+      
+      if (error) throw error;
+
+      // Handle custom profile creation if a backend API is available
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:3000/api'}/profile`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${session.access_token}`
+            },
+            body: JSON.stringify({
+              first_name: metadata?.name?.split(' ')[0] || '',
+              last_name: metadata?.name?.split(' ').slice(1).join(' ') || '',
+              college: metadata?.college || '',
+              year: metadata?.year || '',
+              career_track: metadata?.careerTrack || ''
+            })
+          });
+        }
       } catch (err) {
-        // We log the error but don't throw it, since Firebase auth succeeded
         console.error('Failed to sync new profile with backend:', err);
       }
 
-      // Update Firebase profile with name
-      try {
-        await updateProfile(result.user, {
-          displayName: metadata?.name || ''
-        });
-        // Manually update local user state to reflect the new name immediately
-        setUser(prev => prev ? { ...prev, name: metadata?.name || prev.name } : null);
-      } catch (err) {
-        console.error('Failed to update Firebase profile:', err);
-      }
-
     } catch (error) {
-      console.error('Firebase Register Error:', error);
+      console.error('Supabase Register Error:', error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -161,13 +204,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    await supabase.auth.signOut();
     setUser(null);
     window.location.href = '/';
   };
 
   const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
   };
 
   return (
@@ -179,6 +225,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isLoading,
         login,
         loginWithGoogle,
+        loginWithGithub,
+        sendPhoneOtp,
+        verifyPhoneOtp,
         logout,
         register,
         resetPassword,

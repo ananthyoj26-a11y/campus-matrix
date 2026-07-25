@@ -1,15 +1,17 @@
-import { auth } from './firebase';
+import { supabase } from './supabase';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
 
 async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   let token = null;
-  if (auth.currentUser) {
-    try {
-      token = await auth.currentUser.getIdToken();
-    } catch (error) {
-      console.error('Error fetching Firebase token:', error);
+  
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      token = session.access_token;
     }
+  } catch (error) {
+    console.error('Error fetching Supabase session:', error);
   }
   
   const headers = {
