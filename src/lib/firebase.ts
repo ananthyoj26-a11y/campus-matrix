@@ -7,6 +7,7 @@ import {
   signInWithPopup, 
   signOut, 
   updateProfile,
+  sendPasswordResetEmail,
   onAuthStateChanged,
   User as FirebaseUser
 } from 'firebase/auth';
@@ -36,6 +37,7 @@ export {
   signInWithPopup, 
   signOut, 
   updateProfile,
+  sendPasswordResetEmail,
   onAuthStateChanged 
 };
 export type { FirebaseUser };
