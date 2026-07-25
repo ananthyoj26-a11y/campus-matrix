@@ -36,6 +36,8 @@ const AIMentorPage = lazy(() => import('./features/ai-mentor/AIMentorPage'));
 const EmergencyPage = lazy(() => import('./features/emergency/EmergencyPage'));
 const CampusMapPage = lazy(() => import('./features/campus-map/CampusMapPage'));
 const WeeklyDigestPage = lazy(() => import('./features/weekly-digest/WeeklyDigestPage'));
+const TermsPage = lazy(() => import('./features/legal/TermsPage'));
+const PrivacyPage = lazy(() => import('./features/legal/PrivacyPage'));
 
 // Shared loading spinner
 const PageLoader = () => (
@@ -84,6 +86,8 @@ function AppRoutes() {
         <Route path="/verify-otp" element={<VerifyOTP />} />
         <Route path="/colleges" element={<Suspense fallback={<PageLoader />}><CollegeListPage /></Suspense>} />
         <Route path="/colleges/:id" element={<Suspense fallback={<PageLoader />}><CollegeProfile /></Suspense>} />
+        <Route path="/terms" element={<Suspense fallback={<PageLoader />}><TermsPage /></Suspense>} />
+        <Route path="/privacy" element={<Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />
 
         {/* Onboarding (authenticated but no layout) */}
         <Route path="/onboarding" element={<ProtectedRoute><OnboardingWizard /></ProtectedRoute>} />
