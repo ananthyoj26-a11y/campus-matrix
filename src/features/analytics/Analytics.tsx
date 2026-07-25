@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, 
   XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, 
-  ResponsiveContainer, Area, AreaChart,
+  ResponsiveContainer,
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
-import { Calendar, Target, Code, Award, Flame, UserCheck, Clock, Lightbulb } from 'lucide-react';
+import { Target, Code, Flame, UserCheck, Lightbulb } from 'lucide-react';
 import './Analytics.css';
 
 const codingProgressData = [
@@ -65,7 +65,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 };
 
 const Analytics: React.FC = () => {
-  const [mounted, setMounted] = useState(false);
+  const [_mounted, setMounted] = useState(false);
   const [heatmapData] = useState(generateHeatmapData());
 
   useEffect(() => {

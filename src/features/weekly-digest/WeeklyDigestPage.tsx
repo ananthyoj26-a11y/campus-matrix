@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Calendar, Briefcase, Trophy, Zap, Clock } from 'lucide-react';
+import { Calendar, Briefcase, Trophy, Zap } from 'lucide-react';
 import './WeeklyDigestPage.css';
 
 export default function WeeklyDigestPage() {

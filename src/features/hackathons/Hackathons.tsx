@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trophy, Users, Calendar, Clock, ArrowRight, ExternalLink, Code, BrainCircuit, Globe, Server, Search, Timer } from 'lucide-react';
+import { Trophy, Users, Calendar, Clock, ArrowRight, ExternalLink, Code, Search, Timer } from 'lucide-react';
 import './Hackathons.css';
 
 const HACKATHONS = [

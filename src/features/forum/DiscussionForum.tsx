@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { MessageCircle, ArrowUp, ThumbsUp, Plus, X, Search, Filter } from 'lucide-react';
+import { useState } from 'react';
+import { MessageCircle, ArrowUp, Plus, X, Search } from 'lucide-react';
 import './DiscussionForum.css';
 
 interface Post {

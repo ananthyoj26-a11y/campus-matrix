@@ -119,7 +119,7 @@ export default function Leaderboard() {
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((student, idx) => {
+              {filteredStudents.map((student, _idx) => {
                 // If there's a search query, recalculate rank strictly visually or keep original. Let's show actual rank.
                 const actualRank = STUDENTS.findIndex(s => s.id === student.id) + 1;
                 

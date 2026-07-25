@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, Mail, Lock, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -15,14 +15,24 @@ const RegisterPage = () => {
     careerTrack: 'Frontend Developer'
   });
   const [isLoading, setIsLoading] = useState(false);
-  const { register } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const { register, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect when authentication is successful
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleNext = () => setStep(step + 1);
   const handleBack = () => setStep(step - 1);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+
     if (step < 3) {
       handleNext();
       return;
@@ -31,9 +41,10 @@ const RegisterPage = () => {
     setIsLoading(true);
     try {
       await register(formData.email, formData.password, formData);
-      navigate('/dashboard');
-    } catch (error) {
+      // Navigation is now handled by the useEffect watching isAuthenticated
+    } catch (error: any) {
       console.error('Registration failed', error);
+      setError(error.message || 'Failed to create account. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -59,6 +70,12 @@ const RegisterPage = () => {
           <div className={`step-indicator ${step >= 2 ? 'active' : ''} ${step > 2 ? 'completed' : ''}`}>2</div>
           <div className={`step-indicator ${step >= 3 ? 'active' : ''}`}>3</div>
         </div>
+
+        {error && (
+          <div className="auth-error" style={{ color: 'var(--accent-danger)', background: 'rgba(225, 112, 85, 0.1)', padding: '1rem', borderRadius: 'var(--radius-md)', marginBottom: '1rem', border: '1px solid var(--accent-danger)' }}>
+            {error}
+          </div>
+        )}
 
         <form className="auth-form" onSubmit={handleSubmit}>
           {step === 1 && (

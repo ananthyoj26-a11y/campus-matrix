@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { NavLink, Link } from 'react-router-dom'; /* Assuming react-router v7 is being used */
+import { Link } from 'react-router-dom'; /* Assuming react-router v7 is being used */
 import { 
   Sun, Moon, ArrowRight, Play, Star, Mail, 
-  Menu, X, Map, Code, Users, Briefcase, Trophy, BarChart, ChevronRight 
+  Menu, X, Map, Code, Users, Briefcase, Trophy, BarChart 
 } from 'lucide-react';
 import './LandingPage.css';
 

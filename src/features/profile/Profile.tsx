@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  Target, Zap, Shield, Star, Trophy, Code, MessageSquare, 
-  Briefcase, Edit2, Globe, ExternalLink, 
-  Award, GraduationCap, Calendar, CheckCircle, BarChart, Code2, MapPin
+  Target, Star, Trophy, Code, MessageSquare, 
+  Briefcase, Edit2, ExternalLink, 
+  Award, GraduationCap, Code2
 } from 'lucide-react';
 import './Profile.css';
 
 const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [mounted, setMounted] = useState(false);
+  const [_mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);

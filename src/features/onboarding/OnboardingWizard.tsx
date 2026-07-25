@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, Calendar, Heart, Globe, Phone, AlertCircle,
-  MapPin, Building, GraduationCap, BookOpen, Code,
-  Briefcase, Award, Link as LinkIcon, Target, DollarSign,
+  User, Calendar, Phone, Target,
   ChevronRight, ChevronLeft, Plus, Trash2, Save, CheckCircle
 } from 'lucide-react';
 import './OnboardingWizard.css';

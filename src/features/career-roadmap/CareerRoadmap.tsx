@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Check, Lock, BookOpen, PlayCircle, Code, Star, Sparkles, Target, ChevronRight, Briefcase, Award, TrendingUp } from 'lucide-react';
+import { Check, Lock, Code, Sparkles, Target, Briefcase, Award, TrendingUp } from 'lucide-react';
 import './CareerRoadmap.css';
 
 type Track = 'Frontend' | 'Backend' | 'Full Stack' | 'Data Science' | 'ML/AI' | 'DevOps' | 'Mobile Dev';

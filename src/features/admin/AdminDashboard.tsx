@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
-  Shield, Users, BookOpen, Briefcase, Award, Bell, Search, Edit, 
-  CheckCircle, XCircle, LayoutDashboard, UserCheck, Calendar, Settings, Activity, GraduationCap, Building, Plus
+  Shield, Users, BookOpen, Briefcase, Bell, Search, Edit, 
+  CheckCircle, XCircle, LayoutDashboard, UserCheck, Calendar, Settings, GraduationCap, Plus
 } from 'lucide-react';
 import Modal from '@/components/Modal';
 import './AdminDashboard.css';

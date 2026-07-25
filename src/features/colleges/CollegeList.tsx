@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, MapPin, ChevronRight, Star, TrendingUp, Clock } from 'lucide-react';
+import { Search, MapPin, ChevronRight, Star, TrendingUp } from 'lucide-react';
 import { collegeList } from '@/lib/data/saranathanCollege';
 import './Colleges.css';
 

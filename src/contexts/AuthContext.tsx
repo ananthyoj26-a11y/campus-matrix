@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { auth, googleProvider } from '../lib/firebase';
+import { auth, googleProvider, analytics } from '../lib/firebase';
+import { logEvent } from 'firebase/analytics';
 import { 
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
@@ -107,6 +108,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       
+      // Target tracking: log signup event
+      if (analytics) {
+        logEvent(analytics, 'sign_up', {
+          method: 'email',
+          college: metadata?.college || 'Unknown',
+          year: metadata?.year || 'Unknown',
+          careerTrack: metadata?.careerTrack || 'Unknown'
+        });
+      }
+
       // Call backend API to create the user profile in Supabase
       try {
         const token = await result.user.getIdToken();
@@ -119,9 +130,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           body: JSON.stringify({
             first_name: metadata?.name?.split(' ')[0] || '',
             last_name: metadata?.name?.split(' ').slice(1).join(' ') || '',
+            college: metadata?.college || '',
+            year: metadata?.year || '',
+            career_track: metadata?.careerTrack || ''
           })
         });
       } catch (err) {
+        // We log the error but don't throw it, since Firebase auth succeeded
         console.error('Failed to sync new profile with backend:', err);
       }
     } catch (error) {
@@ -159,6 +174,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {

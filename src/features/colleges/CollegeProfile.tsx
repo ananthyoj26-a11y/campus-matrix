@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
-  Globe, MapPin, Phone, Mail, BookOpen, Users, Calendar,
+  Globe, MapPin, Phone, Mail, BookOpen, Users,
   Search, ChevronLeft, Bookmark, ExternalLink, Award, Star
 } from 'lucide-react';
 import { saranathanCollege } from '@/lib/data/saranathanCollege';
@@ -13,7 +13,7 @@ const TABS = [
 ];
 
 const CollegeProfile = () => {
-  const { id } = useParams();
+  const { id: _id } = useParams();
   const college = saranathanCollege; // In production, fetch by ID
   const [activeTab, setActiveTab] = useState('Overview');
   const [facultySearch, setFacultySearch] = useState('');

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { 
   Flame, Star, Code2, Target, Map, 
-  MessageSquare, Briefcase, Trophy, Bot, ArrowRight, 
-  ArrowUpRight, Clock, Medal, ChevronRight, Zap,
-  Calendar, CheckCircle2, Bell, FileText, BarChart, Percent
+  MessageSquare, Bot, ArrowRight, 
+  ArrowUpRight, Clock, Zap,
+  Calendar, CheckCircle2, Bell, FileText, BarChart
 } from 'lucide-react';
 import './Dashboard.css';
 

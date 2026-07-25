@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Bot, User, Send, Clock, CheckCircle, AlertCircle, 
-  BarChart, RotateCcw, History, Code, Briefcase, Users, Star, Lightbulb, PlayCircle
+  BarChart, RotateCcw, History, Code, Briefcase, Users, Lightbulb, PlayCircle
 } from 'lucide-react';
 import './MockInterview.css';
 

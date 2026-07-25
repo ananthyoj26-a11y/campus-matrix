@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Heart, Plus, Search, Users, BookOpen, Briefcase, Cpu, Coffee } from 'lucide-react';
+import { MessageSquare, Heart, Plus, Search, BookOpen, Briefcase, Cpu, Coffee } from 'lucide-react';
 import './ForumPage.css';
 
 const MOCK_THREADS = [
